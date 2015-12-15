@@ -1,0 +1,31 @@
+{
+  "name": "feather-route-matcher",
+  "description": "featherweight url to handler matching",
+  "version": "0.0.0",
+  "author": "Henrik Joreteg <henrik@joreteg.com>",
+  "bugs": {
+    "url": "https://github.com/henrikjoreteg/feather-route-matcher/issues"
+  },
+  "devDependencies": {
+    "standard": "^5.4.1",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.2.2"
+  },
+  "homepage": "https://github.com/henrikjoreteg/feather-route-matcher",
+  "keywords": [
+    "feather",
+    "matcher",
+    "router",
+    "routing",
+    "url"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/henrikjoreteg/feather-route-matcher"
+  },
+  "scripts": {
+    "test": "node test.js | tap-spec && standard"
+  }
+}
