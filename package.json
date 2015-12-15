@@ -1,7 +1,7 @@
 {
   "name": "feather-route-matcher",
   "description": "featherweight url to handler matching",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "Henrik Joreteg <henrik@joreteg.com>",
   "bugs": {
     "url": "https://github.com/henrikjoreteg/feather-route-matcher/issues"
