@@ -23,7 +23,7 @@ const pageMatcher = createMatcher({
     const selectedCourse = state.courses.find((course) => course.id === id)
 
     if (selectedCourse) {
-      return courseOverview(state, selectedCourse)
+      return courseDetailPage(state, selectedCourse)
     }
   }
 })
