@@ -2,6 +2,7 @@
 var optionalParam = /\((.*?)\)/g
 var namedParam = /(\(\?)?:\w+/g
 var escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g
+var splatParam = /\*/g
 
 // Parses a URL pattern such as `/users/:id`
 // and builds and returns a regex that can be used to
@@ -11,7 +12,7 @@ var escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g
 //
 // It has been modified for extraction of
 // named paramaters from the URL
-exports.parsePattern = function (pattern) {
+var parsePattern = function (pattern) {
   var names = []
   pattern = pattern
     .replace(escapeRegExp, '\\$&')
@@ -20,6 +21,10 @@ exports.parsePattern = function (pattern) {
       names.push(match.slice(1))
       return optional ? match : '([^/?]+)'
     })
+    .replace(splatParam, function (match, optional) {
+      names.push('path')
+      return '([^?]*?)'
+    })
 
   return {
     regExp: new RegExp('^' + pattern + '(?:\\?([\\s\\S]*))?$'),
@@ -27,8 +32,7 @@ exports.parsePattern = function (pattern) {
   }
 }
 
-// our main export, pure functions, FTW!
-module.exports = function (routes) {
+module.exports = function (routes, fallback) {
   var keys = Object.keys(routes)
 
   // loop through each route we're
@@ -36,13 +40,13 @@ module.exports = function (routes) {
   // route cache.
   for (var item in routes) {
     routes[item] = {
-      fn: routes[item]
+      value: routes[item]
     }
   }
 
   // main result is a function that can be called
-  // with URL and current state
-  return function (url, state) {
+  // with the url
+  return function (url) {
     var params
     var route
 
@@ -61,7 +65,7 @@ module.exports = function (routes) {
       // regex once, and store the result
       // for next time.
       if (!route.regExp) {
-        parsed = exports.parsePattern(key)
+        parsed = parsePattern(key)
         route.regExp = parsed.regExp
         route.namedParams = parsed.namedParams
       }
@@ -94,12 +98,20 @@ module.exports = function (routes) {
 
     // no routes matched
     if (!matchFound) {
+      if (fallback) {
+        return {
+          page: fallback,
+          url,
+          params: null
+        }
+      }
       return null
     }
 
-    // return the result of user's function
-    // passing in state and parsed params from
-    // url.
-    return route.fn({state: state, params: params})
+    return {
+      page: route.value,
+      params: params,
+      url: url
+    }
   }
 }

@@ -2,11 +2,15 @@
 
 ![](https://img.shields.io/npm/dm/feather-route-matcher.svg)![](https://img.shields.io/npm/v/feather-route-matcher.svg)![](https://img.shields.io/npm/l/feather-route-matcher.svg)
 
-This tiny module exports a single function that takes an object of url patterns and returns a function that can be called to call the appropriate handler based on the url.
+This tiny module exports a single function that takes an object of url patterns and returns a function that can be called to get the matching object, based on the url.
 
 This is in support of experiments I'm doing for building lightweight clientside apps [here](https://github.com/henrikjoreteg/feather-app).
 
-The resulting function is a tiny little route matcher to be used as follows:
+You call `createMatcher` and pass it an object of routes where the key is the url pattern (using same matching logic as Backbone.js) and the result is whatever you want to return as a match to that url. Usually this would be a component representing the page you want to show for that url pattern, but it could be anything.
+
+You could, for example, create a module that exports that function like this:
+
+**routes.js**
 
 ```js
 import createMatcher from 'feather-route-matcher'
@@ -15,39 +19,54 @@ import courseListingPage from './pages/course-listing'
 import courseDetailPage from './pages/course-detail'
 import notFoundPage from './pages/not-found'
 
-const pageMatcher = createMatcher({
+export default createMatcher({
   '/': homePage,
   '/courses': courseListingPage,
-  // note the named url parameter
-  '/courses/:id': ({state, params}) => {
-    const selectedCourse = state.courses.find((course) => course.id === id)
-
-    if (selectedCourse) {
-      return courseOverview(state, selectedCourse)
-    }
-  }
+  '/courses/:id': courseDetailPage,
+  '/*': notFoundPage
 })
+```
 
+This returns a function that can be called to retrieve the value, along with extracted paramaters:
 
-// your main app render loop
-export default (state) => {
-  const { url } = state
+**other.js**
 
-  let page = pageMatcher(url, state)
-  if (!page) {
-    page = notFoundPage()
-  }
+```js
+import routeMatcher from './routes'
 
-  return (
-    <main>
-      <h1></h1>
-      <nav>
-        <a href='/'>home</a> | <a href='/about'>about</a>
-      </nav>
-      {page}
-    </main>
-  )
-}
+// call it with a pathname you want to match
+routeMatcher('/')
+// => 
+// {
+//   page: homePage,
+//   url: '/',
+//   params: null
+// }
+
+routeMatcher('/courses/47')
+// => 
+// {
+//   page: courseDetailPage,
+//   url: '/',
+//   params: {
+//     id: '47'  
+//   }
+// }
+
+routeMatcher('/some-garbage')
+// => 
+// {
+//   page: notFoundPage,
+//   url: '/some/garbage',
+//   params: {
+//     // anything matched by a wildcard `*`
+//     // will return a param named `path`
+//     // with whatever existed in the location
+//     // where the `*` was
+//     path: 'some/garbage'
+//   }
+// }
+
 ```
 
 ## why is this useful?
@@ -56,8 +75,11 @@ If you treat the `url` in a clientside app as just another piece of application 
 
 That's easy with urls that are known ahead of time, such as `/home` but becomes a bit more arduous when you want to see whether it matches a given pattern and want to extract values such as: `/user/42`. That's where this module helps with.
 
+The result of the matcher is a great candidate for going into a [redux](http://redux.js.org/) store.
 
-## how matching works
+This module could be used as a really lightweight routing system for a react/redux app without the need for React Router.
+
+## how parameter extraction works
 
 pattern: `'/users/:id'` 
 url: `'/something-else'`
@@ -75,16 +97,26 @@ pattern: `'/schools/:schoolId/teachers/:teacherId'`
 url: `'/schools/richland/teachers/47'`
 extracted params: `{schoolId: 'richland', teacherId: '47'}`
 
+pattern: `*`
+url: `'/asdfas'`
+extracted params: `{path: '/asdfas'}`
+**note:** extracted param always called `path`
+
+pattern: `'/schools/*`
+url: `'/schools/richland/teachers/47'`
+extracted params: `{path: 'richland/teachers/47'}`
+
 
 ## Other notes
 
-This module borrows a few extremely well-tested regexes from Backbone.js to do it's pattern matching. Thanks for the generous licensing!
+This module borrows a few extremely well-tested regexes from Backbone.js to do its pattern matching. Thanks for the generous licensing!
 
 Things to be aware of...
 
-1. If you re-use paramater names in the url pattern they'll be overwritten in the result.
-2. There's no support for a catchall, like you may have seen in backbone with the splat syntax: `/*anything` this is because it's unecessary for how this is intented to be used (see example above for page not found scenario). 
+1. Order is imporant, first match wins
+2. If you re-use paramater names in the url pattern they'll be overwritten in the result.
 3. If you need to parse query string values, match the base url first with this module, then use [`query-string`](http://npmjs.com/package/query-string) to parse query values.
+
 
 ## install
 
@@ -101,6 +133,12 @@ If you like this follow [@HenrikJoreteg](http://twitter.com/henrikjoreteg) on tw
 ```
 npm run test
 ```
+
+## changelog
+
+* `2.0.0` - Instead of expecting the values of object passed to `createMatcher` to be function of a certain structure, it now always just returns an object of a pre-determined structure, including the passed url, any extracted params, and a `page` key that contains whatever the original value of that key was.
+
+* `1.0.0` - initial release
 
 ## license
 

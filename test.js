@@ -14,7 +14,9 @@ test('passes all matching cases', function (t) {
     ['/users/:id', '/something-else', null, 'make sure example works as written in readme'],
     ['/users/:id', '/users/scrooge-mc-duck', {id: 'scrooge-mc-duck'}, 'make sure examples works as written in readme'],
     ['/users/:id', '/users/47', {id: '47'}, 'make sure example works as written in readme'],
-    ['/schools/:schoolId/teachers/:teacherId', '/schools/richland/teachers/47', {schoolId: 'richland', teacherId: '47'}, 'example from readme']
+    ['/schools/:schoolId/teachers/:teacherId', '/schools/richland/teachers/47', {schoolId: 'richland', teacherId: '47'}, 'example from readme'],
+    ['/random/*', '/random/something/stuff', {path: 'something/stuff'}],
+    ['/*', '/sdfasfas', {path: 'sdfasfas'}]
   ]
 
   cases.forEach(function (testCase) {
@@ -23,24 +25,29 @@ test('passes all matching cases', function (t) {
     var url = testCase[1]
     var expectedResult = testCase[2]
     var description = testCase[3]
+    var SOME_PAGE = {}
 
-    routes[pattern] = function (opts) {
-      t.deepEqual(opts.params, expectedResult, description)
-      t.deepEqual(opts.state, {some: 'state'}, 'state should always be passed through')
-      return true
-    }
+    routes[pattern] = SOME_PAGE
     var matchUrl = createMatcher(routes)
-    var page = matchUrl(url, {some: 'state'})
 
-    if (page) {
+    var result = matchUrl(url)
+
+    if (result) {
       if (expectedResult) {
         t.pass('got a match as expected')
       } else {
         t.fail('should not have gotten a match')
       }
+      t.deepEqual(result, {
+        page: SOME_PAGE,
+        url: url,
+        params: expectedResult
+      }, description)
     } else {
       if (expectedResult) {
         t.fail('should have gotten a match, pattern: ' + pattern + ' url: ' + url)
+      } else {
+        t.pass('got null as expected')
       }
     }
   })
