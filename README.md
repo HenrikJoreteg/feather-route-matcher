@@ -136,6 +136,8 @@ npm run test
 
 ## changelog
 
+* `2.0.1` - Remove accidentally left ES6 usage.
+
 * `2.0.0` - Instead of expecting the values of object passed to `createMatcher` to be function of a certain structure, it now always just returns an object of a pre-determined structure, including the passed url, any extracted params, and a `page` key that contains whatever the original value of that key was.
 
 * `1.0.0` - initial release

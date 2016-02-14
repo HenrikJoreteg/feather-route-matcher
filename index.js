@@ -101,7 +101,7 @@ module.exports = function (routes, fallback) {
       if (fallback) {
         return {
           page: fallback,
-          url,
+          url: url,
           params: null
         }
       }
