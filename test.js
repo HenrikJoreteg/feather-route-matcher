@@ -41,7 +41,8 @@ test('passes all matching cases', function (t) {
       t.deepEqual(result, {
         page: SOME_PAGE,
         url: url,
-        params: expectedResult
+        params: expectedResult,
+        pattern: pattern
       }, description)
     } else {
       if (expectedResult) {

@@ -68,6 +68,7 @@ module.exports = function (routes, fallback) {
         parsed = parsePattern(key)
         route.regExp = parsed.regExp
         route.namedParams = parsed.namedParams
+        route.pattern = key
       }
 
       // run our cached regex
@@ -111,7 +112,8 @@ module.exports = function (routes, fallback) {
     return {
       page: route.value,
       params: params,
-      url: url
+      url: url,
+      pattern: route.pattern
     }
   }
 }
