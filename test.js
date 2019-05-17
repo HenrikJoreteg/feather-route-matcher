@@ -1,22 +1,22 @@
 var test = require('tape')
-var createMatcher = require('./')
+var createMatcher = require('./feather-route-matcher')
 
 test('passes all matching cases', function (t) {
   var cases = [
     ['/:first/:second', '/ok', null, 'should not match if missing required params'],
-    ['/:first', '/ok', {first: 'ok'}, 'should extract simple, named params'],
+    ['/:first', '/ok', { first: 'ok' }, 'should extract simple, named params'],
     ['/:first/', '/ok', null, 'should not tolerate missing trailing slashes'],
-    ['/:first/', '/ok/', {first: 'ok'}, 'should tolerate trailing slashes when explicit'],
+    ['/:first/', '/ok/', { first: 'ok' }, 'should tolerate trailing slashes when explicit'],
     ['/:first/:second', '/ok/', null, 'should not match if has slash but no value'],
-    ['/:first/:second', '/ok/second', {first: 'ok', second: 'second'}, 'can extract two values'],
-    ['/:first(/:second)', '/ok/second', {first: 'ok', second: 'second'}, 'second value optional and is supplied'],
-    ['/:first(/:second)', '/ok', {first: 'ok'}, 'second value optional and not supplied'],
+    ['/:first/:second', '/ok/second', { first: 'ok', second: 'second' }, 'can extract two values'],
+    ['/:first(/:second)', '/ok/second', { first: 'ok', second: 'second' }, 'second value optional and is supplied'],
+    ['/:first(/:second)', '/ok', { first: 'ok' }, 'second value optional and not supplied'],
     ['/users/:id', '/something-else', null, 'make sure example works as written in readme'],
-    ['/users/:id', '/users/scrooge-mc-duck', {id: 'scrooge-mc-duck'}, 'make sure examples works as written in readme'],
-    ['/users/:id', '/users/47', {id: '47'}, 'make sure example works as written in readme'],
-    ['/schools/:schoolId/teachers/:teacherId', '/schools/richland/teachers/47', {schoolId: 'richland', teacherId: '47'}, 'example from readme'],
-    ['/random/*', '/random/something/stuff', {path: 'something/stuff'}],
-    ['/*', '/sdfasfas', {path: 'sdfasfas'}]
+    ['/users/:id', '/users/scrooge-mc-duck', { id: 'scrooge-mc-duck' }, 'make sure examples works as written in readme'],
+    ['/users/:id', '/users/47', { id: '47' }, 'make sure example works as written in readme'],
+    ['/schools/:schoolId/teachers/:teacherId', '/schools/richland/teachers/47', { schoolId: 'richland', teacherId: '47' }, 'example from readme'],
+    ['/random/*', '/random/something/stuff', { path: 'something/stuff' }],
+    ['/*', '/sdfasfas', { path: 'sdfasfas' }]
   ]
 
   cases.forEach(function (testCase) {
