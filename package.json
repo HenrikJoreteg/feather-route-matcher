@@ -37,6 +37,9 @@
     "test": "node test.js | tap-spec && standard"
   },
   "standard": {
-    "ignore": [ "feather-route-matcher.js",  "feather-route-matcher.min.js" ]
+    "ignore": [
+      "feather-route-matcher.js",
+      "feather-route-matcher.min.js"
+    ]
   }
 }
