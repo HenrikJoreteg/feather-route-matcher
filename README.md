@@ -136,6 +136,8 @@ npm run test
 
 ## changelog
 
+* `3.1.0` - Non-breaking conversion of `./index.js` into an esm module. umd version remains available as `./feather-route-matcher.js` and `./feather-route-matcher.min.js`
+
 * `3.0.0` - Changed result to now include the pattern that was matched as well.
 
 * `2.0.1` - Remove accidentally left ES6 usage.
