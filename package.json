@@ -1,15 +1,20 @@
 {
   "name": "feather-route-matcher",
   "description": "featherweight url to handler matching",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "author": "Henrik Joreteg <henrik@joreteg.com>",
   "bugs": {
     "url": "https://github.com/henrikjoreteg/feather-route-matcher/issues"
   },
   "devDependencies": {
-    "standard": "^5.4.1",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.2.2"
+    "rollup": "^1.12.2",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-filesize": "^6.0.1",
+    "rollup-plugin-node-resolve": "^5.0.0",
+    "rollup-plugin-uglify": "^6.0.2",
+    "standard": "^12.0.1",
+    "tap-spec": "^5.0.0",
+    "tape": "^4.10.1"
   },
   "homepage": "https://github.com/henrikjoreteg/feather-route-matcher",
   "keywords": [
@@ -20,12 +25,21 @@
     "url"
   ],
   "license": "MIT",
-  "main": "index.js",
+  "main": "feather-route-matcher.js",
+  "module": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/henrikjoreteg/feather-route-matcher"
   },
   "scripts": {
+    "build": "rollup -c",
+    "pretest": "npm run build",
     "test": "node test.js | tap-spec && standard"
+  },
+  "standard": {
+    "ignore": [
+      "feather-route-matcher.js",
+      "feather-route-matcher.min.js"
+    ]
   }
 }

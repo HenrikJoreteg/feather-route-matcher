@@ -1,6 +1,7 @@
 // regexes borrowed from backbone
 var optionalParam = /\((.*?)\)/g
 var namedParam = /(\(\?)?:\w+/g
+// eslint-disable-next-line no-useless-escape
 var escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g
 var splatParam = /\*/g
 
@@ -12,7 +13,7 @@ var splatParam = /\*/g
 //
 // It has been modified for extraction of
 // named paramaters from the URL
-var parsePattern = function (pattern) {
+function parsePattern (pattern) {
   var names = []
   pattern = pattern
     .replace(escapeRegExp, '\\$&')
@@ -32,15 +33,17 @@ var parsePattern = function (pattern) {
   }
 }
 
-module.exports = function (routes, fallback) {
+export default function (routes, fallback) {
   var keys = Object.keys(routes)
 
   // loop through each route we're
   // and build the shell of our
   // route cache.
   for (var item in routes) {
-    routes[item] = {
-      value: routes[item]
+    if (routes.hasOwnProperty(item)) {
+      routes[item] = {
+        value: routes[item]
+      }
     }
   }
 
