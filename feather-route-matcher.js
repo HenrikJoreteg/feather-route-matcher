@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.createMatcher = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
   // regexes borrowed from backbone
   var optionalParam = /\((.*?)\)/g;
@@ -18,8 +18,8 @@
   // other maintainers of Backbone.js
   //
   // It has been modified for extraction of
-  // named paramaters from the URL
-  function parsePattern (pattern) {
+  // named parameters from the URL
+  var parsePattern = function (pattern) {
     var names = [];
     pattern = pattern
       .replace(escapeRegExp, '\\$&')
@@ -28,7 +28,7 @@
         names.push(match.slice(1));
         return optional ? match : '([^/?]+)'
       })
-      .replace(splatParam, function (match, optional) {
+      .replace(splatParam, function () {
         names.push('path');
         return '([^?]*?)'
       });
@@ -37,20 +37,19 @@
       regExp: new RegExp('^' + pattern + '(?:\\?([\\s\\S]*))?$'),
       namedParams: names
     }
-  }
+  };
 
-  function index (routes, fallback) {
+  function index (routes) {
     var keys = Object.keys(routes);
+    var routeCache = {};
 
     // loop through each route we're
     // and build the shell of our
     // route cache.
     for (var item in routes) {
-      if (routes.hasOwnProperty(item)) {
-        routes[item] = {
-          value: routes[item]
-        };
-      }
+      routeCache[item] = {
+        value: routes[item]
+      };
     }
 
     // main result is a function that can be called
@@ -65,7 +64,7 @@
 
         // fetch the route pattern from the cache
         // there will always be one
-        route = routes[key];
+        route = routeCache[key];
 
         // if the route doesn't already have
         // a regex we never generated one
@@ -93,7 +92,7 @@
         // remove other cruft from result
         result = result.slice(1, -1);
 
-        // reduce our match to an object of named paramaters
+        // reduce our match to an object of named parameters
         // we've extracted from the url
         params = result.reduce(function (obj, val, index) {
           if (val) {
@@ -108,18 +107,11 @@
 
       // no routes matched
       if (!matchFound) {
-        if (fallback) {
-          return {
-            page: fallback,
-            url: url,
-            params: null
-          }
-        }
         return null
       }
 
       return {
-        page: route.value,
+        value: route.value,
         params: params,
         url: url,
         pattern: route.pattern
@@ -129,5 +121,5 @@
 
   return index;
 
-}));
+})));
 //# sourceMappingURL=feather-route-matcher.js.map

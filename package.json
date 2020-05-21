@@ -7,14 +7,15 @@
     "url": "https://github.com/henrikjoreteg/feather-route-matcher/issues"
   },
   "devDependencies": {
-    "rollup": "^1.12.2",
-    "rollup-plugin-commonjs": "^10.0.0",
-    "rollup-plugin-filesize": "^6.0.1",
-    "rollup-plugin-node-resolve": "^5.0.0",
-    "rollup-plugin-uglify": "^6.0.2",
-    "standard": "^12.0.1",
-    "tap-spec": "^5.0.0",
-    "tape": "^4.10.1"
+    "rollup": "2.10.5",
+    "rollup-plugin-commonjs": "10.1.0",
+    "rollup-plugin-filesize": "9.0.0",
+    "rollup-plugin-node-resolve": "5.2.0",
+    "rollup-plugin-uglify": "6.0.4",
+    "standard": "14.3.4",
+    "tap": "14.10.7",
+    "tap-spec": "5.0.0",
+    "tape": "5.0.0"
   },
   "homepage": "https://github.com/henrikjoreteg/feather-route-matcher",
   "keywords": [
@@ -41,5 +42,10 @@
       "feather-route-matcher.js",
       "feather-route-matcher.min.js"
     ]
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "none"
   }
 }
